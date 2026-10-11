@@ -1,27 +1,34 @@
-name: Makefile CI
+name: Build GBA ROM
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+push:
+branches: [“principale”]
+workflow_dispatch:
 
 jobs:
-  build:
+build:
+runs-on: ubuntu-latest
+container:
+image: devkitpro/devkitarm:latest
+steps:
+- name: Checkout repository
+uses: actions/checkout@v4
 
-    runs-on: ubuntu-latest
+  - name: Compile ROM
+    run: make
+  - name: Upload ROM
+    uses: actions/upload-artifact@v4
+    with:
+      name: pokemon-generazioni-gba
+      path: pokemon-generazioni.gba
+      if-no-files-found: error
 
-    steps:
-    - uses: actions/checkout@v4
+  - name: Compile ROM
+    run: make
 
-    - name: configure
-      run: ./configure
-
-    - name: Install dependencies
-      run: make
-
-    - name: Run check
-      run: make check
-
-    - name: Run distcheck
-      run: make distcheck
+  - name: Upload ROM
+    uses: actions/upload-artifact@v4
+    with:
+      name: pokemon-generazioni-gba
+      path: pokemon-generazioni.gba
+      if-no-files-found: error
